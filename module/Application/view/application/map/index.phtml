@@ -1,0 +1,274 @@
+<div class="row">
+    <div class="col-xs-4">
+        <div class="well well-sm">
+            <?php echo $this->form()->openTag($form); ?>
+            <div class="row">
+                <div class="col-xs-4">
+                    <b>Zoeken op</b>
+                </div>
+                <div class="col-xs-8">
+                    <?php echo $this->formElement($form->get('key')); ?>
+                    <?php echo $this->formElement($form->get('searchvalue')); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn btn-success"><span class="glyphicon glyphicon-search"></span> Toon Haltes</button></br>
+                     <?php echo $this->form()->closeTag($form); ?>
+                </div>
+            </div>
+        </div>
+        <div class="well well-sm">
+            <?php echo $this->form()->openTag($pathform); ?>
+            <div class="row">
+                <div class="col-xs-4">
+                    <b>From</b>
+                </div>
+                <div class="col-xs-8">
+                    <?php echo $this->formElement($pathform->get('busstopFrom')); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <b>To</b>
+                </div>
+                <div class="col-xs-8">
+                    <?php echo $this->formElement($pathform->get('busstopTo')); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn btn-success"><span class="glyphicon glyphicon-search"></span> Toon Route</button></br>
+                     <?php echo $this->form()->closeTag($pathform); ?>
+                </div>
+            </div>
+        </div>
+    <table class="table">
+        <tr><th id="codelabel">Code:</th><td id="code"></td></tr>
+        <tr><th id="namelabel">Naam:</th><td id="name"></td></tr>
+        <tr><th id="townlabel">Plaats:</th><td id="town"></td></tr>
+        <tr><th id="wheelchairlabel">Rolstoel vriendelijk:</th><td id="wheelchair"></td></tr>
+    </table>
+    </div>
+    <div class="col-xs-8">
+        <div id="map-canvas"/></div>
+    </div>
+</div>
+<style type="text/css">
+div#container {
+    width: 100%;
+    max-width: 100%;
+}
+#map-canvas {
+    width:100%;
+    height:100%;
+    min-height: 800px;
+}
+</style>
+<script type="text/javascript">
+
+var markers = [];
+var queue = [];
+var tracks = [];
+    function showMarkers(busstops, center)
+    {
+        deleteMarkers();
+        for(i = 0; i < busstops.length; i++) {
+            var point = new google.maps.LatLng(busstops[i].latitude, busstops[i].longitude);
+            var marker = new google.maps.Marker({
+                position: point,
+                map: map,
+                icon: circle,
+                title: busstops[i].name + ', ' + busstops[i].town + "(" + busstops[i].code + ")"
+            });
+            markers.push(marker);
+            if(center!=null)
+            {
+                map.setCenter(new google.maps.LatLng(center.latitude, center.longitude));
+                map.setZoom(12);
+            }
+        }
+    }
+
+    function setAllMap(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+    }
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+        setAllMap(null);
+        while(tracks.length > 0) {
+            track = tracks.pop();
+            track.setMap(null);
+        }
+        markers = [];
+    }
+
+    function callAllstops() {
+        var pcenter = [];
+        pcenter['latitude'] = 52.155172;
+        pcenter['longitude'] = 5.387201;
+        map.setCenter(new google.maps.LatLng(pcenter['latitude'], pcenter['longitude']));
+    }
+
+    var mapOptions = {
+        center: new google.maps.LatLng(52.5, 5.75),
+        zoom: 7,
+        //mapTypeId: google.maps.MapTypeId.TERRAIN,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        backgroundColor: "#FFFFFF"
+    }
+    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    var circle ={
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: 'red',
+        fillOpacity: .4,
+        scale: 4.5,
+        strokeColor: 'white',
+        strokeWeight: 1
+    };
+
+    var customStyle = [
+        { featureType: "administrative.country", elementType: "all", stylers: [{ visibility: "on", color: "#000000"}] },
+        { featureType: "administrative.province", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "road", elementType: "all", stylers: [{ visibility: "on"}] },
+        { featureType: "poi", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "landscape.natural.landcover", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "transit", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "transit.station", elementType: "all", stylers: [{ visibility: "on"}] },
+        { featureType: "transit.station.rail", elementType: "all", stylers: [{ visibility: "on"}] },
+        { featureType: "water", elementType: "all", stylers: [{ visibility: "on", color: "#ffcc3", hue: "#ffcc3"}] }
+    ];
+    var styledMapOptions = {
+        name: "customStyle"
+    };
+    var customMapType = new google.maps.StyledMapType(customStyle, styledMapOptions);
+    map.mapTypes.set('customStyle', customMapType);
+    map.setMapTypeId('customStyle');
+
+    $('.formSearch').submit(function(){
+
+        var key = $("#key").val();
+        var value = $("#searchvalue").val();
+        $.ajax({
+            type: 'GET',
+            dataType: "json",
+            url: "/busstops",
+            data: key + "=" + value.replace(" ", "+"),
+            success: function(msg) {
+                if(msg.busstops)
+                {
+                    if(msg.busstops.length <= 1) {
+                        $('#codelabel').html("Code:");
+                        $('#namelabel').html("Naam");
+                        $('#townlabel').html("Plaats");
+                        $('#wheelchairlabel').html("Rolstoel vriendelijk");
+                        $('#code').html(msg.busstops[0].code);
+                        $('#name').html(msg.busstops[0].name);
+                        $('#town').html(msg.busstops[0].town);
+                        $('#wheelchair').html(msg.busstops[0].wheelchair);
+                    } else {
+                        $('#codelabel').html("bushaltes op map");
+                        $('#namelabel').html("totaal aantal bushaltes");
+                        $('#townlabel').html("");
+                        $('#wheelchairlabel').html("");
+                        $('#code').html(msg.busstops.length);
+                        $('#name').html(msg.metadata.totalResults);
+                        $('#town').html("");
+                        $('#wheelchair').html("");
+                    }
+                    showMarkers(msg.busstops, msg.center);
+                }
+                else
+                {
+                    console.log("FAUL");
+                }
+            }
+        });
+
+        return false; // prevent default action
+
+    });
+
+        $('.formPath').submit(function(){
+
+        var from = $("#busstopFrom").val();
+        var to = $("#busstopTo").val();
+        $.ajax({
+            type: 'GET',
+            dataType: "json",
+            url: "/path/" + from + "/" + to,
+            data: "",
+            success: function(msg) {
+                if(msg.path)
+                {
+                    $('#codelabel').html("Van:");
+                    $('#namelabel').html("Naar");
+                    $('#townlabel').html("Afstand");
+                    $('#wheelchairlabel').html("Hemelsbreed afstand");
+                    $('#code').html(msg.busstopFrom.name);
+                    $('#name').html(msg.busstopTo.name);
+                    $('#town').html(msg.distance);
+                    $('#wheelchair').html(msg.birdDistance);
+                    showPath(msg.path, msg.center);
+                }
+                else
+                {
+                    console.log("FAUL");
+                }
+            }
+        });
+
+        return false; // prevent default action
+
+    });
+
+    function showPath(path, center) {
+        deleteMarkers();
+
+        for(i = 0; i < path.length; i++) {
+            queue.push(path[i]);
+            var point = new google.maps.LatLng(path[i].latitude, path[i].longitude);
+            var marker = new google.maps.Marker({
+                position: point,
+                map: map,
+                icon: circle,
+                title: path[i].name + ', ' + path[i].town + "(" + path[i].code + ")"
+            });
+            markers.push(marker);
+        }
+        var from = queue.pop();
+        var edge = [];
+        while (queue.length > 0) {
+            var to = queue.pop();
+
+            edge[from.code + to.code] = [
+                new google.maps.LatLng(from.latitude, from.longitude),
+                new google.maps.LatLng(to.latitude, to.longitude)
+            ];
+            trackPath = new google.maps.Polyline({
+                path: edge[from.code + to.code],
+                geodesic: true,
+                strokeColor: '#000066',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+        trackPath.setMap(map);
+        tracks.push(trackPath);
+        from = to;
+        }
+        if(center!=null)
+        {
+            map.setCenter(new google.maps.LatLng(center.latitude, center.longitude));
+            map.setZoom(12);
+        }
+    }
+
+    /*google.maps.event.addListener(map, 'idle', function() {
+        google.maps.event.addListener(map, 'bounds_changed', showMarkers(map.getBounds()));
+    })*/
+    google.maps.event.addListener(window, 'load', callAllstops());
+
+</script>

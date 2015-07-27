@@ -1,0 +1,164 @@
+<?php
+//print_r($this->busstop->getCode());
+//return;
+$form->setAttribute('action', $this->url('busstop', array('action' => 'view', 'code' => $this->busstop->getCode())));
+?>
+
+<div class="row">
+    <div class="col-xs-4">
+        <div class="well well-sm">
+            <?php echo $this->form()->openTag($form); ?>
+            <div class="row">
+                <div class="col-xs-4">
+                    <b>Haltecode</b>
+                </div>
+                <div class="col-xs-8">
+                    <?php echo $this->formElement($form->get('busstopFaux')); ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn btn-success"><span class="glyphicon glyphicon-search"></span> Toon Halte</button></br>
+                     <?php echo $this->form()->closeTag($form); ?>
+                </div>
+            </div>
+        </div>
+        <table class="table">
+            <tr><th>Code:</th><td id="code"><?php echo $busstop->getCode();?></td></tr>
+            <tr><th>Naam:</th><td id="name"><?php echo $busstop->getName();?></td></tr>
+            <tr><th>Plaats:</th><td id="town"><?php echo $busstop->getTown();?></td></tr>
+            <tr><th>Rolstoel vriendelijk:</th><td id="wheelchair"><?php echo $busstop->getWheelchair() ? 'Ja' : 'Nee';?></td></tr>
+        </table>
+    </div>
+    <div class="col-xs-8">
+        <div id="map-canvas"></div>
+    </div>
+</div>
+<style type="text/css">
+div#container {
+    width: 100%;
+    max-width: 100%;
+}
+#map-canvas {
+    width:100%;
+    height:100%;
+    min-height: 800px;
+}
+</style>
+<script type="text/javascript">
+var markers = [];
+    function showMarkers(busstop, bounds=null)
+    {
+        console.log(busstop.latitude);
+        deleteMarkers();
+        var point = new google.maps.LatLng(busstop.latitude,busstop.longitude);
+        //if(bounds.contains(point)) {
+            var marker = new google.maps.Marker({
+                position: point,
+                map: map,
+                //icon: circle,
+                //title: busstop.name + ', ' + busstop.town + '(' + busstop.code + ')'
+            });
+            markers.push(marker);
+            map.setCenter(point);
+        //}
+
+        /*<?php foreach ($busstops as $busstop): ?>
+            var point = new google.maps.LatLng(<?php echo $busstop->getLatitude(); ?>, <?php echo $busstop->getLongitude(); ?>);
+            if(bounds.contains(point)) {
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(<?php echo $busstop->getLatitude(); ?>, <?php echo $busstop->getLongitude(); ?>),
+                    map: map,
+                    icon: circle,
+                    title: '<?php echo addslashes($busstop->getName() . ', ' . $busstop->getTown()); ?>  (<?php echo addslashes($busstop->getCode()); ?>)'
+                });
+                markers.push(marker);
+            }
+        <?php endforeach; ?>*/
+    }
+
+    $('#formPath').submit(function(){
+
+
+        var codevalue = $(this).serialize();
+        console.log(codevalue);
+
+        $.ajax({
+            type: 'GET',
+            dataType: "json",
+            url: "/busstops/" + $('#busstopFaux').val(),
+            data: codevalue,
+            success: function(msg) {
+                if(msg.busstop)
+                {
+                    $('#code').html(msg.busstop.code);
+                    $('#name').html(msg.busstop.name);
+                    $('#town').html(msg.busstop.town);
+                    $('#wheelchair').html(msg.busstop.wheelchair);
+                    showMarkers(msg.busstop);
+                }
+                else
+                {
+                    $('#code').html("Onbekende code");
+                    $('#name').html("");
+                    $('#town').html("");
+                    $('#wheelchair').html("");
+                }
+            },
+        });
+
+        return false; // prevent default action
+
+    });
+
+    function setAllMap(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+    }
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+        setAllMap(null);
+        markers = [];
+    }
+    var mapOptions = {
+        center: new google.maps.LatLng(<?php echo $busstop->getLatitude(); ?>, <?php echo $busstop->getLongitude(); ?>),
+        zoom: 15,
+        scaleControl: true,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        backgroundColor: "#FFFFFF"
+    };
+    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+    var circle ={
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: 'red',
+        fillOpacity: .4,
+        scale: 4.5,
+        strokeColor: 'white',
+        strokeWeight: 1
+    };
+
+    var customStyle = [
+        { featureType: "administrative.country", elementType: "all", stylers: [{ visibility: "on", color: "#000000"}] },
+        { featureType: "administrative.province", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "road", elementType: "all", stylers: [{ visibility: "on"}] },
+        { featureType: "poi", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "landscape.natural.landcover", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "transit", elementType: "all", stylers: [{ visibility: "off"}] },
+        { featureType: "transit.station", elementType: "all", stylers: [{ visibility: "on"}] },
+        { featureType: "transit.station.rail", elementType: "all", stylers: [{ visibility: "on"}] },
+        { featureType: "water", elementType: "all", stylers: [{ visibility: "on", color: "#ffcc3", hue: "#ffcc3"}] }
+    ];
+    var styledMapOptions = {
+        name: "customStyle"
+    };
+    var customMapType = new google.maps.StyledMapType(customStyle, styledMapOptions);
+    map.mapTypes.set('customStyle', customMapType);
+    map.setMapTypeId('customStyle');
+
+    //google.maps.event.addListener(map, 'idle', function() {
+    //    google.maps.event.addListener(map, 'bounds_changed', showMarkers(<?php $busstop ?>), map.getBounds()));
+    //})
+    //showMarkers(map.getBounds());
+</script>
