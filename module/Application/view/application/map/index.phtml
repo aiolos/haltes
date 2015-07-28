@@ -191,7 +191,7 @@ var tracks = [];
 
     });
 
-        $('.formPath').submit(function(){
+    $('.formPath').submit(function(){
 
         var from = $("#busstopFrom").val();
         var to = $("#busstopTo").val();
@@ -266,9 +266,6 @@ var tracks = [];
         }
     }
 
-    /*google.maps.event.addListener(map, 'idle', function() {
-        google.maps.event.addListener(map, 'bounds_changed', showMarkers(map.getBounds()));
-    })*/
     google.maps.event.addListener(window, 'load', callAllstops());
 
 </script>

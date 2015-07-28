@@ -245,7 +245,6 @@ class BusstopController extends AbstractActionController
             if (!$busstopTo) {
                 $message .= sprintf(' Stop %s not found.', $to);
             }
-            //$this->getResponse()->setStatusCode(\Zend\Http\Response::STATUS_CODE_404);
 
             return $viewModel->setVariables(
                 array(
