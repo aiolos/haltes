@@ -25,7 +25,7 @@ use Zend\Json\Json;
  *
  * @category Application
  * @package  Application\Entity
- * @author   Henri de Jong <henri.dejong@regiecentrale.nl>
+ * @author   Henri de Jong <henri.dejong@mobiliteitsfabriek.nl>
  * @license  http://www.mobiliteitsfabriek.nl/license Commercial License
  * @link     http://www.mobiliteitsfabriek.nl
  *

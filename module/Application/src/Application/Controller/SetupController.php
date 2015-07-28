@@ -60,7 +60,7 @@ class SetupController extends AbstractActionController
         echo 'Importing Arriva Stops.' . PHP_EOL;
         $this->loadStops('data/setup/arriva/stops.txt');
         echo 'Importing Connexxion Stops.' . PHP_EOL;
-        $this->loadStops('data/setup/connection/stops.txt');
+        $this->loadStops('data/setup/connexxion/stops.txt');
         echo 'Importing EBS Stops.' . PHP_EOL;
         $this->loadStops('data/setup/ebs/stops.txt');
         echo 'Importing GVB Stops.' . PHP_EOL;
