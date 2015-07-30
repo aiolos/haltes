@@ -5,7 +5,7 @@
             <include name="*.jar"/>
         </fileset>
     </path>
-    <target name="build" depends="prepare,lint" />
+    <target name="build" depends="prepare,lint,create-tables,load-data" />
     <target name="build-ci" depends="build,phploc,phpcs,pdepend,phpmd,phpcpd,phpunit" />
 
     <target name="clean" description="Clean build artifacts">
@@ -163,4 +163,8 @@
             <arg value="-v" />
         </exec>
     </target>
+
+
+
+
 </project>

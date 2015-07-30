@@ -24,6 +24,7 @@ use SplFileObject;
 
 use Application\Entity\BusStop;
 use Application\Entity\Track;
+use Application\Download\OVapiDownloader;
 
 /**
  * SetupController
@@ -55,6 +56,10 @@ class SetupController extends AbstractActionController
         if (!$this->getRequest() instanceof ConsoleRequest) {
             throw new \RuntimeException('You can only use this action from a console!');
         }
+        echo "Start Downloading Stops." . PHP_EOL;
+        $this->downloadStops();
+        echo "Finished Downloading Stops." . PHP_EOL;
+
         $this->deleteStops();
         echo 'Running setup: loadStops.' . PHP_EOL;
         echo 'Importing Arriva Stops.' . PHP_EOL;
@@ -232,5 +237,31 @@ class SetupController extends AbstractActionController
 
         echo PHP_EOL;
         echo 'Loading distances complete' . PHP_EOL;
+    }
+
+    protected function downloadStops()
+    {
+        $operators = array(
+            "arriva",
+            "connexxion",
+            "ebs",
+            "htm",
+            "gvb",
+            "qbuzz",
+            "ret",
+            "syntus",
+            "veolia"
+        );
+
+        $ovapi = new OVapiDownloader();
+        foreach ($operators as $operator) {
+            $dloc = "http://gtfs.ovapi.nl/" . $operator . "/gtfs-kv1" . $operator . "-latest.zip";
+            $sloc = "data/setup/" . $operator."/".$operator.".zip";
+            $zip = new \ZipArchive;
+            $ovapi->downloadRemoteFile($dloc, $sloc);
+            echo "downloaded: " . $operator . " stops.\n";
+            $ovapi->extractFile($zip, $sloc, "data/setup/" . $operator . "/", 'stops.txt');
+            echo "extracted to" . $sloc . "\n";
+        }
     }
 }

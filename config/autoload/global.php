@@ -14,9 +14,9 @@
 return array(
     'db' => array(
         'driver' => 'Pdo',
-        'dsn'            => 'mysql:dbname=haltes;host=localhost',
-        'username'       => 'haltes',
-        'password'       => 'haltes',
+        'dsn'            => 'mysql:dbname=DBNAME;host=localhost',
+        'username'       => 'USERNAME',
+        'password'       => 'PASSWORD',
         'driver_options' => array(
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
         ),
@@ -34,9 +34,9 @@ return array(
                 'params'      => array(
                     'host'     => '127.0.0.1',
                     'port'     => '3306',
-                    'user'     => 'haltes',
-                    'password' => 'haltes',
-                    'dbname'   => 'haltes'
+                    'user'     => 'USERNAME',
+                    'password' => 'PASSWORD',
+                    'dbname'   => 'DBNAME'
                 )
             )
         )
