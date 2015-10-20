@@ -1,0 +1,22 @@
+{
+    "name": "haltes",
+    "description": "Haltes ",
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "keywords": [],
+    "homepage": "http://www.mobiliteitsfabriek.nl",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.2.6",
+        "doctrine/doctrine-orm-module": "0.7.*"
+    },
+    "require-dev": {
+        "phploc/phploc": "2.1.*",
+        "squizlabs/php_codesniffer": "dev-master",
+        "pdepend/pdepend": "2.0.*",
+        "phpmd/phpmd": "dev-master",
+        "sebastian/phpcpd": "dev-master",
+        "phpunit/phpunit": "^4.8"
+    }
+}
+

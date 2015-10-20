@@ -9,7 +9,7 @@ With this application it's possible to see all stops on a map and calculate dist
 It makes use of the Zend Framework 2 together with Doctrine.
 The stops are searchable with the form on the left side of the page.
 
-The webapplication also has an API side. This is included to create connection possibility with other application.
+The web application also has an API side. This is included to create connection possibility with other application.
 By making use of this REST API, an array of stops can be returned in JSON format.
 
 Setup
