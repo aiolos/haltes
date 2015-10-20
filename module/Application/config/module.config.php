@@ -1,10 +1,12 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Haltes
  *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * PHP Version 5.5
+ *
+ * @link      http://www.mobiliteitsfabriek.nl
+ * @copyright Copyright (c) 2015 Mobiliteitsfabriek
+ * @license   http://www.gnu.org/licenses/gpl-3.0.html GPL
  */
 
 return array(

@@ -1,9 +1,9 @@
 {
     "name": "haltes",
     "description": "Haltes ",
-    "license": "BSD-3-Clause",
+    "license": "GPL 3.0",
     "minimum-stability": "dev",
-    "keywords": [],
+    "keywords": ["busstops", "public transport"],
     "homepage": "http://www.mobiliteitsfabriek.nl",
     "require": {
         "php": ">=5.3.3",
