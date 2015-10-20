@@ -7,7 +7,7 @@ php:
   - nightly
 
 script:
- - vendor/bin/phpunit -c phpunit.xml.dist
+ - vendor/bin/phpunit
 
 before_script:
  - composer selfupdate --quiet

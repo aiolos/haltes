@@ -16,7 +16,7 @@
         "pdepend/pdepend": "2.0.*",
         "phpmd/phpmd": "dev-master",
         "sebastian/phpcpd": "dev-master",
-        "phpunit/phpunit": "3.7.*@dev"
+        "phpunit/phpunit": "^4.8"
     }
 }
 
