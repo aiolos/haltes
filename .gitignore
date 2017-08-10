@@ -6,7 +6,6 @@
 .idea
 .project
 .settings
-composer.lock
 /vendor
 /build
 /bin

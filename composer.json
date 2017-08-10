@@ -5,18 +5,22 @@
     "minimum-stability": "dev",
     "keywords": ["busstops", "public transport"],
     "homepage": "http://www.mobiliteitsfabriek.nl",
+    "config": {
+        "platform": {
+            "php": "5.5.38"
+        },
+        "preferred-install": "dist"
+    },
     "require": {
-        "php": ">=5.6",
         "zendframework/zendframework": "2.2.6",
         "doctrine/doctrine-orm-module": "0.7.*"
     },
     "require-dev": {
-        "phploc/phploc": "2.1.*",
-        "squizlabs/php_codesniffer": "@stable",
-        "pdepend/pdepend": "2.0.*",
-        "phpmd/phpmd": "@stable",
-        "sebastian/phpcpd": "@stable",
-        "phpunit/phpunit": "^5"
+        "phploc/phploc": "^2.0",
+        "squizlabs/php_codesniffer": "^2.0",
+        "pdepend/pdepend": "^2.0",
+        "phpmd/phpmd": "^2.0",
+        "sebastian/phpcpd": "^2.0",
+        "phpunit/phpunit": "^5.0"
     }
 }
-
