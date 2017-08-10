@@ -6,17 +6,17 @@
     "keywords": ["busstops", "public transport"],
     "homepage": "http://www.mobiliteitsfabriek.nl",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.6",
         "zendframework/zendframework": "2.2.6",
         "doctrine/doctrine-orm-module": "0.7.*"
     },
     "require-dev": {
         "phploc/phploc": "2.1.*",
-        "squizlabs/php_codesniffer": "dev-master",
+        "squizlabs/php_codesniffer": "@stable",
         "pdepend/pdepend": "2.0.*",
-        "phpmd/phpmd": "dev-master",
-        "sebastian/phpcpd": "dev-master",
-        "phpunit/phpunit": "^4.8"
+        "phpmd/phpmd": "@stable",
+        "sebastian/phpcpd": "@stable",
+        "phpunit/phpunit": "^5"
     }
 }
 
