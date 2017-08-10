@@ -21,6 +21,6 @@
         "pdepend/pdepend": "^2.0",
         "phpmd/phpmd": "^2.0",
         "sebastian/phpcpd": "^2.0",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^5.0"
     }
 }
